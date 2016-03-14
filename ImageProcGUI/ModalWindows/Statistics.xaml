@@ -1,0 +1,71 @@
+﻿<Window x:Class="ImageProcGUI.ModalWindows.Statistics"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Statistics" Height="250" Width="459" ResizeMode="NoResize" x:Name="Stats">
+    <Grid Background="#d6dbe9">
+        <ListView Name="list" Margin="10,10,10,50" ItemsSource="{Binding ElementName=Stats, Path=StatsChannels,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}">
+        <ListView.ItemContainerStyle>
+            <Style TargetType="{x:Type ListViewItem}">
+                <Setter Property="BorderBrush" Value="LightGray" />
+                <Setter Property="BorderThickness" Value="0,0,0,1" />
+                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            </Style>
+        </ListView.ItemContainerStyle>
+        <ListView.View >
+            <GridView >
+                <GridViewColumn Header="Channels" Width="100">
+                    <GridViewColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock FontWeight="Bold" TextAlignment="Center" Text="{Binding Channel}"/>
+                        </DataTemplate>
+                    </GridViewColumn.CellTemplate>
+                </GridViewColumn>
+                <GridViewColumn Header="Average" Width="100">
+                    <GridViewColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock TextAlignment="Center" Text="{Binding Average}"/>
+                        </DataTemplate>
+                    </GridViewColumn.CellTemplate>
+                </GridViewColumn>
+                <GridViewColumn  Header="Standard Deviation" Width="150">
+                    <GridViewColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock TextAlignment="Center" Text="{Binding Standard_Dev}"/>
+                        </DataTemplate>
+                    </GridViewColumn.CellTemplate>
+                </GridViewColumn>
+                <GridViewColumn  Header="Hor. Correlation 1st Deg" Width="150">
+                    <GridViewColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock TextAlignment="Center" Text="{Binding Cor_Hor_1st}"/>
+                        </DataTemplate>
+                    </GridViewColumn.CellTemplate>
+                </GridViewColumn>
+                <GridViewColumn  Header="Ver. Correlation 1st Deg" Width="150">
+                    <GridViewColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock TextAlignment="Center" Text="{Binding Cor_Ver_1st}"/>
+                        </DataTemplate>
+                    </GridViewColumn.CellTemplate>
+                </GridViewColumn>
+                <GridViewColumn  Header="Hor. Correlation 2nd Deg" Width="150">
+                    <GridViewColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock TextAlignment="Center" Text="{Binding Cor_Hor_2nd}"/>
+                        </DataTemplate>
+                    </GridViewColumn.CellTemplate>
+                </GridViewColumn>
+                <GridViewColumn  Header="Ver. Correlation 2nd Deg" Width="150">
+                    <GridViewColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock TextAlignment="Center" Text="{Binding Cor_Ver_2nd}"/>
+                        </DataTemplate>
+                    </GridViewColumn.CellTemplate>
+                </GridViewColumn>
+            </GridView>
+        </ListView.View>
+    </ListView>
+        <Button Content="OK" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="75" Margin="10" Click="Button_Click"/>
+
+    </Grid>
+</Window>

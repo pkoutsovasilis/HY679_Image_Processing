@@ -1,0 +1,225 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:Controls="clr-namespace:ImageProcGUI.Controls" 
+    xmlns:Converters="clr-namespace:ImageProcGUI.Converters" 
+    xmlns:local="clr-namespace:ImageProcGUI"
+        xmlns:Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero" 
+        x:Class="ImageProcGUI.MainWindow"
+        Title="Digital Image Processing" Height="600" Width="800" MinHeight="600" MinWidth="800" ResizeMode="CanResizeWithGrip"
+    Closing="Window_Closing" Icon="Resources\app.ico">
+    <Window.CommandBindings>
+        <CommandBinding Command="{x:Static local:MainWindow.ImageClose}" Executed="CloseExecuted" CanExecute="CloseCanExecute"/>
+        <CommandBinding Command="{x:Static local:MainWindow.ImageOpen}" Executed="OpenExecuted" CanExecute="OpenCanExecute"/>
+        <CommandBinding Command="{x:Static local:MainWindow.ImageSave}" Executed="SaveExecuted" CanExecute="HistCanExecute"/>
+        <CommandBinding Command="{x:Static local:MainWindow.ImageSaveAs}" Executed="SaveAsExecuted" CanExecute="HistCanExecute"/>
+        <CommandBinding Command="{x:Static local:MainWindow.ImageStats}" Executed="StatsExecuted" CanExecute="HistCanExecute"/>
+        <CommandBinding Command="{x:Static local:MainWindow.ImageUndo}" Executed="UndoExecuted" CanExecute="HistCanExecute"/>
+        <CommandBinding Command="{x:Static local:MainWindow.ImageRedo}" Executed="RedoExecuted" CanExecute="HistCanExecute"/>
+        <CommandBinding Command="{x:Static local:MainWindow.ImageRestore}" Executed="RestoreExecuted" CanExecute="HistCanExecute"/>
+        <CommandBinding Command="{x:Static local:MainWindow.ImageFilt}" Executed="FiltExecuted" CanExecute="HistCanExecute"/>
+        <CommandBinding Command="{x:Static local:MainWindow.ImageHist}" Executed="HistExecuted" CanExecute="HistCanExecute"/>
+        <CommandBinding Command="{x:Static local:MainWindow.ImageFourier}" Executed="FourierExecuted" CanExecute="HistCanExecute"/>
+        <CommandBinding Command="{x:Static local:MainWindow.ImageMorph}" Executed="MorphExecuted" CanExecute="HistCanExecute"/>
+        <CommandBinding Command="{x:Static local:MainWindow.ImageSinogram}" Executed="SinogramExecuted" CanExecute="HistCanExecute"/>
+    </Window.CommandBindings>
+    <Window.InputBindings>
+        <KeyBinding Command="local:MainWindow.ImageClose" Gesture="CTRL+W" />
+        <KeyBinding Command="local:MainWindow.ImageOpen" Gesture="CTRL+O" />
+        <KeyBinding Command="local:MainWindow.ImageHist" Gesture="CTRL+H" />
+        <KeyBinding Command="local:MainWindow.ImageSave" Gesture="CTRL+S" />
+        <KeyBinding Command="local:MainWindow.ImageSaveAs" Gesture="CTRL+SHIFT+S" />
+        <KeyBinding Command="local:MainWindow.ImageStats" Gesture="CTRL+T" />
+        <KeyBinding Command="local:MainWindow.ImageUndo" Gesture="CTRL+Z" />
+        <KeyBinding Command="local:MainWindow.ImageRedo" Gesture="CTRL+Y" />
+        <KeyBinding Command="local:MainWindow.ImageRestore" Gesture="CTRL+R" />
+        <KeyBinding Command="local:MainWindow.ImageFilt" Gesture="CTRL+SHIFT+F" />
+        <KeyBinding Command="local:MainWindow.ImageFourier" Gesture="CTRL+SHIFT+M" />
+        <KeyBinding Command="local:MainWindow.ImageMorph" Gesture="CTRL+M" />
+        <KeyBinding Command="local:MainWindow.ImageSinogram" Gesture="CTRL+B" />
+    </Window.InputBindings>
+    <Window.Resources>
+        <Converters:WidthHeightConverter x:Key="widthheightConverter"/>
+        <Converters:ItemsCountVisibilityConverter x:Key="itemsCountVisibilityConverter"/>
+        <Converters:EncodingConverter x:Key="encodingConverter"/>
+        <Style x:Key="mMenu" TargetType="{x:Type MenuItem}">
+            <Setter Property="Foreground" Value="Black" />
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Foreground" Value="Gray"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="myMenu" TargetType="{x:Type MenuItem}">
+            <Setter Property="Foreground" Value="Black" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True" >
+                    <Setter Property="Foreground" Value="Black" />
+                    <Setter Property="Background" Value="#fdf4bf" />
+                    <Setter Property="BorderBrush" Value="#e5c365"/>
+                </Trigger>
+                <Trigger Property="IsMouseOver" Value="False">
+                    <Setter Property="Foreground" Value="White"/>
+                </Trigger>
+                <Trigger Property="IsHighlighted" Value="True">
+                    <Setter Property="Background" Value="White" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <Grid.Background>
+            <ImageBrush ImageSource="Resources\alpha.png"  TileMode="Tile" 
+            Viewport="0,0,192,200" ViewportUnits="Absolute"/>
+        </Grid.Background>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <DockPanel Grid.Row="0" VerticalAlignment="Top">
+            <StackPanel Orientation="Vertical">
+                <Menu Background="#293a56"  >
+                    <MenuItem Foreground="White" Header="_File" >
+                        <MenuItem Foreground="Black" Header="_Open" InputGestureText="Ctrl+O" Command="local:MainWindow.ImageOpen"/>
+                        <MenuItem  Style="{StaticResource mMenu}"  Header="_Save" InputGestureText="Ctrl+S" Command="local:MainWindow.ImageSave" IsEnabled="{Binding ElementName=OpenedImages, Path=SelectedItems.Count}"/>
+                        <MenuItem  Style="{StaticResource mMenu}"  Header="_Save As" InputGestureText="Ctrl+Shift+S" Command="local:MainWindow.ImageSaveAs" IsEnabled="{Binding ElementName=OpenedImages, Path=SelectedItems.Count}"/>
+                        <MenuItem  Style="{StaticResource mMenu}"  InputGestureText="Ctrl+W" Command="local:MainWindow.ImageClose" Header="_Close" IsEnabled="{Binding ElementName=OpenedImages, Path=SelectedItems.Count}"/>
+                        <MenuItem  Style="{StaticResource mMenu}"  Header="_Exit" Click="Exit_MenuItem_Click"/>
+                    </MenuItem>
+                    <MenuItem Foreground="White" Header="_Edit">
+                        <!--<MenuItem  Style="{StaticResource mMenu}" InputGestureText="Ctrl+Y" Command="local:MainWindow.ImageRedo" IsEnabled="{Binding ElementName=OpenedImages, Path=SelectedItem.ImageRedo}" Header="_Redo"/>-->
+                        <MenuItem  Style="{StaticResource mMenu}" InputGestureText="Ctrl+Z" Command="local:MainWindow.ImageUndo" IsEnabled="{Binding ElementName=OpenedImages, Path=SelectedItem.ImageUndo}" Header="_Undo"/>
+                        <MenuItem  Style="{StaticResource mMenu}"  InputGestureText="Ctrl+R" Command="local:MainWindow.ImageRestore" IsEnabled="{Binding ElementName=OpenedImages, Path=SelectedItems.Count}" Header="_Restore"/>
+                    </MenuItem>
+                    <MenuItem Foreground="White" Header="_Actions">
+                        <MenuItem Style="{StaticResource mMenu}"  Header="_Convert to YCbCr" Click="Convert_YCBCR_Click" IsEnabled="{Binding ElementName=OpenedImages, Path=SelectedItem.ImageEncoding, Converter={StaticResource encodingConverter}, ConverterParameter='0', FallbackValue=false}">
+                        </MenuItem>
+                        <MenuItem Style="{StaticResource mMenu}" IsEnabled="{Binding ElementName=OpenedImages, Path=SelectedItem.ImageEncoding, Converter={StaticResource encodingConverter}, ConverterParameter='1', FallbackValue=false}"  Header="_Convert to RGB" Click="Convert_RGB_Click">
+                        
+                        </MenuItem>
+                    </MenuItem>
+                    <MenuItem Foreground="White" Header="_Image">
+                        <MenuItem Header="_Flip Horizontally" Style="{StaticResource mMenu}" IsEnabled="{Binding ElementName=OpenedImages, Path=SelectedItems.Count}" Click="FlipHor_MenuItem_Click"/>
+                        <MenuItem Header="_Flip Vertically" Style="{StaticResource mMenu}" IsEnabled="{Binding ElementName=OpenedImages, Path=SelectedItems.Count}" Click="FlipVer_MenuItem_Click"/>
+                        <Separator/>
+                        <MenuItem Header="_Rotate 90 deg Clockwise" Style="{StaticResource mMenu}" IsEnabled="{Binding ElementName=OpenedImages, Path=SelectedItems.Count}" Click="RotC90_MenuItem_Click"/>
+                        <MenuItem Header="_Rotate 90 deg Counter-Clockwise" Style="{StaticResource mMenu}" IsEnabled="{Binding ElementName=OpenedImages, Path=SelectedItems.Count}" Click="RotCC90_MenuItem_Click"/>
+                        <MenuItem Header="_Rotate 180 deg Clockwise"  Style="{StaticResource mMenu}" IsEnabled="{Binding ElementName=OpenedImages, Path=SelectedItems.Count}" Click="RotC180_MenuItem_Click"/>
+                        <Separator/>
+                        <MenuItem Style="{StaticResource mMenu}" InputGestureText="Ctrl+T" Command="local:MainWindow.ImageStats" IsEnabled="{Binding ElementName=OpenedImages, Path=SelectedItems.Count}" Header="_Statistics" />
+                    </MenuItem>
+                    <MenuItem Foreground="White" Header="_Adjustments">
+                        <MenuItem Style="{StaticResource mMenu}" InputGestureText="Ctrl+H" Command="local:MainWindow.ImageHist" IsEnabled="{Binding ElementName=OpenedImages, Path=SelectedItems.Count}" Header="_Histogram"/>
+                        <MenuItem Style="{StaticResource mMenu}" InputGestureText="Ctrl+Shift+F" Command="local:MainWindow.ImageFilt" IsEnabled="{Binding ElementName=OpenedImages, Path=SelectedItems.Count}" Header="_Filters"/>
+                        <MenuItem Style="{StaticResource mMenu}" InputGestureText="Ctrl+Shift+M" Command="local:MainWindow.ImageFourier" IsEnabled="{Binding ElementName=OpenedImages, Path=SelectedItems.Count}" Header="_Fourier"/>
+                        <MenuItem Style="{StaticResource mMenu}" InputGestureText="Ctrl+M" Command="local:MainWindow.ImageMorph" IsEnabled="{Binding ElementName=OpenedImages, Path=SelectedItems.Count}" Header="_Morphology"/>
+                        <MenuItem Style="{StaticResource mMenu}" InputGestureText="Ctrl+B" Command="local:MainWindow.ImageSinogram" IsEnabled="{Binding ElementName=OpenedImages, Path=SelectedItems.Count}" Header="_Sinogram"/>
+                    </MenuItem>
+                    <MenuItem Foreground="White" IsEnabled="{Binding IsOpen}" Header="_Effects">
+                        <MenuItem Style="{StaticResource mMenu}" IsEnabled="{Binding ElementName=OpenedImages, Path=SelectedItems.Count}" Header="_Negative" Click="Negative_MenuItem_Click"/>
+                        <MenuItem Style="{StaticResource mMenu}" IsEnabled="{Binding ElementName=OpenedImages, Path=SelectedItems.Count}" Header="_Grayscale" Click="Grayscale_MenuItem_Click"/>
+                    </MenuItem>
+                    <MenuItem Foreground="White" Header="_Help" >
+                        <MenuItem Foreground="Black" Header="_About"/>
+                    </MenuItem>
+                </Menu>
+            </StackPanel>
+        </DockPanel>
+        <Grid Grid.Row="1">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="85*"/>
+                    <ColumnDefinition Width="150"/>
+                </Grid.ColumnDefinitions>
+                <ScrollViewer Grid.Row="1" Grid.Column="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                    <Image MouseMove="Image_MouseMove" MouseLeave="Image_MouseLeave" Source="{Binding SelectedItem.ImageSource, ElementName=OpenedImages}" VerticalAlignment="Center" HorizontalAlignment="Center" Width="Auto" Height="Auto" Grid.Row="1"/>
+                </ScrollViewer>
+                <Grid Grid.Column="1" Grid.Row="1" >
+                    <ListBox x:Name="OpenedImages" BorderThickness="1,0,0,0" SelectionMode="Extended" Background="#d0d1d7">
+                        <ListBox.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <VirtualizingStackPanel IsItemsHost="True" HorizontalAlignment="Center" Orientation="Vertical" Margin="10"/>
+                            </ItemsPanelTemplate>
+                        </ListBox.ItemsPanel>
+                        <ListBox.Style>
+                            <Style>
+                                <Style.Resources>
+                                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#ca5100" />
+                                </Style.Resources>
+                            </Style>
+                        </ListBox.Style>
+                        <ListBox.ItemContainerStyle>
+                            <Style TargetType="ListBoxItem">
+                                <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                                <Setter Property="ContextMenu">
+                                    <Setter.Value>
+                                        <ContextMenu>
+                                            <MenuItem Header="Close" Command="local:MainWindow.ImageClose"/>
+                                        </ContextMenu>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </ListBox.ItemContainerStyle>
+                    </ListBox>
+                </Grid>
+            </Grid>
+        </Grid>
+        <DockPanel Grid.Row="2" VerticalAlignment="Bottom">
+            <StatusBar BorderThickness="0,3,0,0" Background="#ca5100" Foreground="White" BorderBrush="#293a56">
+                <StatusBar.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="685*"/>
+                                <ColumnDefinition Width="Auto" MinWidth="30" />
+                                <ColumnDefinition Width="Auto" MinWidth="80" />
+                                <ColumnDefinition Width="Auto" MinWidth="50"/>
+                                <ColumnDefinition Width="Auto" MinWidth="95"/>
+                            </Grid.ColumnDefinitions>
+                        </Grid>
+                    </ItemsPanelTemplate>
+                </StatusBar.ItemsPanel>
+                <StatusBarItem  Content="{Binding SelectedItem.ImagePath, ElementName=OpenedImages}" Grid.Column ="0"/>
+                <StatusBarItem Visibility="{Binding ElementName=OpenedImages, Path=Items.Count, Converter={StaticResource itemsCountVisibilityConverter}}" x:Name="MousePos" HorizontalAlignment="Center" Grid.Column="1">
+                    <StatusBarItem.Template>
+                        <ControlTemplate TargetType="{x:Type StatusBarItem}">
+                            <StackPanel Orientation="Horizontal" MinWidth="70">
+                                <ContentPresenter  Margin="3"
+									x:Name="ContentSite"/>
+                            </StackPanel>
+                        </ControlTemplate>
+                    </StatusBarItem.Template>
+                </StatusBarItem>
+                
+                <StatusBarItem HorizontalAlignment="Right" Grid.Column="2" >
+                    <StatusBarItem.Template>
+                        <ControlTemplate TargetType="{x:Type StatusBarItem}">
+                            <StackPanel Orientation="Horizontal" MinWidth="70">
+                                <ContentPresenter  Margin="3" x:Name="ContentSite"/>
+                            </StackPanel>
+                        </ControlTemplate>
+                    </StatusBarItem.Template>
+                    <MultiBinding Converter="{StaticResource widthheightConverter}" UpdateSourceTrigger="PropertyChanged">
+                        <Binding ElementName="OpenedImages" Path="SelectedItem.ImageWidth"/>
+                        <Binding ElementName="OpenedImages" Path="SelectedItem.ImageHeight"/>
+                    </MultiBinding>
+                </StatusBarItem>
+                <StatusBarItem Content="{Binding SelectedItem.ImageEncoding, ElementName=OpenedImages}" Grid.Column ="3"/>
+                <StatusBarItem x:Name="PixelValue" Visibility="{Binding ElementName=OpenedImages, Path=Items.Count, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource itemsCountVisibilityConverter}}" HorizontalAlignment="Right" Grid.Column="4" Margin="0,0,15,0">
+                <StatusBarItem.Template>
+                    <ControlTemplate TargetType="{x:Type StatusBarItem}">
+                        <StackPanel Orientation="Horizontal" MinWidth="50">
+                            <ContentPresenter  Margin="3"
+									x:Name="ContentSite"/>
+                        </StackPanel>
+                    </ControlTemplate>
+                </StatusBarItem.Template>
+            </StatusBarItem>
+            </StatusBar>
+        </DockPanel>
+    </Grid>
+</Window>

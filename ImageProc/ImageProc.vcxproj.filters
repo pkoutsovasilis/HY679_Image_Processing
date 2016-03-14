@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="image.c" />
+    <ClCompile Include="imageio.c" />
+    <ClCompile Include="globals.c" />
+    <ClCompile Include="histogram.c" />
+    <ClCompile Include="statistics.c" />
+    <ClCompile Include="filters.c" />
+    <ClCompile Include="fourier.c" />
+    <ClCompile Include="morphology.c" />
+    <ClCompile Include="geometry.c" />
+    <ClCompile Include="sinogram.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="image.h" />
+    <ClInclude Include="imageio.h" />
+    <ClInclude Include="globals.h" />
+    <ClInclude Include="histogram.h" />
+    <ClInclude Include="statistics.h" />
+    <ClInclude Include="filters.h" />
+    <ClInclude Include="fourier.h" />
+    <ClInclude Include="morphology.h" />
+    <ClInclude Include="geometry.h" />
+    <ClInclude Include="sinogram.h" />
+  </ItemGroup>
+</Project>

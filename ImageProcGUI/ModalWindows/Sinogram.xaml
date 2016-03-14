@@ -1,0 +1,19 @@
+﻿<Window x:Class="ImageProcGUI.ModalWindows.Sinogram"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Sinogram" Height="199" Width="270" ResizeMode="NoResize">
+    <Grid Background="#d6dbe9">
+
+        <GroupBox Header="Sinogram Options" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="10,10,10,0">
+            <StackPanel Orientation="Vertical" Margin="5">
+                <RadioButton x:Name="nfilt" GroupName="filterRDB" Margin="5" Content="No filter" IsChecked="True"/>
+                <RadioButton x:Name="hamfilt" GroupName="filterRDB" Margin="5" Content="Hamming window"/>
+                <RadioButton x:Name="hanfilt" GroupName="filterRDB" Margin="5" Content="Hanning window"/>
+            </StackPanel>
+        </GroupBox>
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Right">
+            <Button Content="OK"  Margin="0,10,0,10" Width="75" Click="Button_Click" />
+            <Button Content="Cancel"  Margin="10" Width="75" Click="Button_Click_1" />
+        </StackPanel>
+    </Grid>
+</Window>
